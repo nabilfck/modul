@@ -1,23 +1,26 @@
-# Start your image with a node base image
-FROM node:18-alpine
+# Gunakan image dasar Node.js
+FROM node:18
 
-# The /app directory should act as the main application directory
-WORKDIR /app
 
-# Copy the app package and package-lock.json file
-COPY package*.json ./
+# Set direktori kerja
+WORKDIR /usr/src/app
 
-# Copy local directories to the current local directory of our docker image (/app)
-COPY ./src ./src
-COPY ./public ./public
 
-# Install node packages, install serve, build the app, and remove dependencies at the end
-RUN npm install \
-    && npm install -g serve \
-    && npm run build \
-    && rm -fr node_modules
+# Salin package.json dan package-lock.json
+COPY package.json package-lock.json ./
 
-EXPOSE 3000
 
-# Start the app using serve command
-CMD [ "serve", "-s", "build" ]
+# Install dependensi
+RUN npm install
+
+
+# Salin semua file aplikasi ke dalam container
+COPY . .
+
+
+# Ekspose port yang digunakan oleh Expo
+EXPOSE 19000 19001 19002
+
+
+# Jalankan aplikasi
+CMD ["npm", "start"]
